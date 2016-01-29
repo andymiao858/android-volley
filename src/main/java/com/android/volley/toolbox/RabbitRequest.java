@@ -50,7 +50,6 @@ public abstract class RabbitRequest<T> extends Request<T> {
 		return params;
 	}
 
-
 	@Override
 	protected void onFinish() {
 		super.onFinish();
