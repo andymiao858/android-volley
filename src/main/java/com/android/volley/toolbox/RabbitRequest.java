@@ -15,10 +15,12 @@
  */
 package com.android.volley.toolbox;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -32,6 +34,8 @@ public abstract class RabbitRequest<T> extends Request<T> {
 
 	Map<String, String> params;
 
+	Map<String, String> headers;
+
 	public RabbitRequest(int method, String url, Response.Listener successListener,
 			Response.ErrorListener errorListener) {
 		this(method, url, null, successListener, errorListener);
@@ -39,15 +43,26 @@ public abstract class RabbitRequest<T> extends Request<T> {
 
 	public RabbitRequest(int method, String url, Map<String, String> params, Response.Listener successListener,
 			Response.ErrorListener errorListener) {
+		this(method, url, params, null, successListener, errorListener);
+	}
+
+	public RabbitRequest(int method, String url, Map<String, String> params, Map<String, String> headers, Response.Listener successListener,
+						 Response.ErrorListener errorListener) {
 		super(method, url, errorListener);
 		this.successListener = successListener;
 		this.params = params;
+		this.headers = headers;
 		clazz = (Class<T>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 
 	@Override
 	public Map<String, String> getParams() {
 		return params;
+	}
+
+	@Override
+	public Map<String, String> getHeaders() throws AuthFailureError {
+		return headers == null ? super.getHeaders() : headers;
 	}
 
 	@Override

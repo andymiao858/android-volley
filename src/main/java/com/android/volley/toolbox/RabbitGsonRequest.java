@@ -41,12 +41,18 @@ public class RabbitGsonRequest<T> extends RabbitRequest<T> {
 
 	public RabbitGsonRequest(int method, String url, Response.Listener successListener,
 							 Response.ErrorListener errorListener) {
-		this(method, url, null, successListener, errorListener);
+		super(method, url, null, successListener, errorListener);
+		gson = new GsonBuilder().create();
 	}
 
 	public RabbitGsonRequest(int method, String url, Map<String, String> params, Response.Listener successListener,
 							 Response.ErrorListener errorListener) {
 		super(method, url, params, successListener, errorListener);
+		gson = new GsonBuilder().create();
+	}
+
+	public RabbitGsonRequest(int method, String url, Map<String, String> params, Map<String, String> headers, Response.Listener successListener, Response.ErrorListener errorListener) {
+		super(method, url, params, headers, successListener, errorListener);
 		gson = new GsonBuilder().create();
 	}
 
