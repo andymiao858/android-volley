@@ -28,17 +28,17 @@ public class RabbitStringRequest extends RabbitRequest<String> {
 
 	public RabbitStringRequest(int method, String url, Response.Listener successListener,
 			Response.ErrorListener errorListener) {
-		super(method, url, String.class, successListener, errorListener);
+		super(method, url, successListener, errorListener);
 	}
 
 	public RabbitStringRequest(int method, String url, Map<String, String> params,
 			Response.Listener successListener, Response.ErrorListener errorListener) {
-		super(method, url, String.class, params, successListener, errorListener);
+		super(method, url, params, successListener, errorListener);
 	}
 
 	public RabbitStringRequest(int method, String url, Map<String, String> params,
 			Map<String, String> headers, Response.Listener successListener, Response.ErrorListener errorListener) {
-		super(method, url, String.class, params, headers, successListener, errorListener);
+		super(method, url, params, headers, successListener, errorListener);
 	}
 
 	@Override

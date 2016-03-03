@@ -18,8 +18,8 @@ package com.android.volley.toolbox;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyLog;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 
 /**
@@ -29,29 +29,27 @@ public abstract class RabbitRequest<T> extends Request<T> {
 
 	Response.Listener<T> successListener;
 
-	Class<T> clazz;
-
 	Map<String, String> params;
 
 	Map<String, String> headers;
 
-	public RabbitRequest(int method, String url, Class<T> clazz, Response.Listener successListener,
+	public RabbitRequest(int method, String url, Response.Listener successListener,
 			Response.ErrorListener errorListener) {
-		this(method, url, clazz, null, null, successListener, errorListener);
+		this(method, url, null, null, successListener, errorListener);
 	}
 
-	public RabbitRequest(int method, String url, Class<T> clazz, Map<String, String> params, Response.Listener successListener,
+	public RabbitRequest(int method, String url, Map<String, String> params, Response.Listener successListener,
 			Response.ErrorListener errorListener) {
-		this(method, url, clazz, params, null, successListener, errorListener);
+		this(method, url, params, null, successListener, errorListener);
 	}
 
-	public RabbitRequest(int method, String url, Class<T> clazz, Map<String, String> params, Map<String, String> headers, Response.Listener successListener,
-						 Response.ErrorListener errorListener) {
+	public RabbitRequest(int method, String url, Map<String, String> params, Map<String, String> headers,
+			Response.Listener successListener,
+			Response.ErrorListener errorListener) {
 		super(method, url, errorListener);
 		this.successListener = successListener;
 		this.params = params;
 		this.headers = headers;
-		this.clazz = clazz;
 	}
 
 	@Override
@@ -76,4 +74,14 @@ public abstract class RabbitRequest<T> extends Request<T> {
 		super.onFinish();
 		successListener = null;
 	}
+
+	protected void logStackTrace(Throwable throwable){
+		if (throwable == null ){
+			return;
+		}
+		for (StackTraceElement trace : throwable.getStackTrace()){
+			VolleyLog.e(trace.toString());
+		}
+	}
+
 }

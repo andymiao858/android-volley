@@ -19,6 +19,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -37,24 +38,29 @@ public class RabbitGsonRequest<T> extends RabbitRequest<T> {
 	/** Content type for request. */
 	private static final String PROTOCOL_CONTENT_TYPE = String.format("application/json; charset=%s", PROTOCOL_CHARSET);
 
+	private final Class<T> clazz;
+
 	private final Gson gson;
 
 	public RabbitGsonRequest(int method, String url, Class<T> clazz, Response.Listener successListener,
 			Response.ErrorListener errorListener) {
-		super(method, url, clazz, successListener, errorListener);
+		super(method, url, successListener, errorListener);
+		this.clazz = clazz;
 		gson = new GsonBuilder().create();
 	}
 
 	public RabbitGsonRequest(int method, String url, Class<T> clazz, Map<String, String> params,
 			Response.Listener successListener,
 			Response.ErrorListener errorListener) {
-		super(method, url, clazz, params, successListener, errorListener);
+		super(method, url, params, successListener, errorListener);
+		this.clazz = clazz;
 		gson = new GsonBuilder().create();
 	}
 
 	public RabbitGsonRequest(int method, String url, Class<T> clazz, Map<String, String> params,
 			Map<String, String> headers, Response.Listener successListener, Response.ErrorListener errorListener) {
-		super(method, url, clazz, params, headers, successListener, errorListener);
+		super(method, url, params, headers, successListener, errorListener);
+		this.clazz = clazz;
 		gson = new GsonBuilder().create();
 	}
 
@@ -65,10 +71,13 @@ public class RabbitGsonRequest<T> extends RabbitRequest<T> {
 			T responseDto = gson.fromJson(gsonString, clazz);
 			return Response.success(responseDto, HttpHeaderParser.parseCacheHeaders(response));
 		} catch (UnsupportedEncodingException e) {
+			logStackTrace(e);
 			return Response.error(new ParseError(e));
 		} catch (JsonSyntaxException e) {
+			logStackTrace(e);
 			return Response.error(new ParseError(e));
 		} catch (Exception e) {
+			logStackTrace(e);
 			return Response.error(new VolleyError(e));
 		}
 	}
