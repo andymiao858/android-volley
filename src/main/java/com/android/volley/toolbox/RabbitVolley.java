@@ -35,6 +35,8 @@ public class RabbitVolley {
 	private static final String DEFAULT_CACHE_DIR = "volley";
 
 	private static RequestQueue mRequestQueue;
+	private static RequestQueue mFileRequestQueue;
+
 
 	/**
 	 * Creates a default instance of the worker pool and calls {@link RequestQueue#start()} on it.
@@ -78,7 +80,10 @@ public class RabbitVolley {
 			mRequestQueue = new RequestQueue(new DiskBasedCache(cacheDir, maxDiskCacheBytes), network);
 		}
 
+		mFileRequestQueue = new RequestQueue(new DiskBasedCache(cacheDir), network);
+
 		mRequestQueue.start();
+		mFileRequestQueue.start();
 
 		return mRequestQueue;
 	}
@@ -118,5 +123,9 @@ public class RabbitVolley {
 
 	public static RequestQueue getRequestQueue() {
 		return mRequestQueue;
+	}
+
+	public static RequestQueue getFileRequestQueue(){
+		return mFileRequestQueue;
 	}
 }

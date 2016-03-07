@@ -35,6 +35,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -171,11 +172,19 @@ public class OkHttp3Stack implements HttpStack {
 	}
 
 	private static RequestBody createRequestBody(Request r) throws AuthFailureError {
-		final byte[] body = r.getBody();
-		if (body == null) {
-			return null;
-		}
 
-		return RequestBody.create(MediaType.parse(r.getBodyContentType()), body);
+		if (r instanceof WritableBody){
+			final File file = ((WritableBody)r).getFile();
+			if (file == null) {
+				return null;
+			}
+			return RequestBody.create(MediaType.parse(r.getBodyContentType()), file);
+		} else {
+			final byte[] body = r.getBody();
+			if (body == null) {
+				return null;
+			}
+			return RequestBody.create(MediaType.parse(r.getBodyContentType()), body);
+		}
 	}
 }
